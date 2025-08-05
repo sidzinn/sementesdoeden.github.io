@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sementes do Éden</title>
+    <!-- Inclui o Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Link para a fonte Inter do Google Fonts para uma tipografia moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define a fonte Inter como padrão para o corpo do site */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para o cabeçalho transparente */
+        .header-bg {
+            background-color: transparent; /* Fundo transparente */
+            box-shadow: none; /* Sem sombra */
+        }
+        /* Estilos para os botões de link com gradiente e sombra aprimorados */
+        .link-button {
+            transition: all 0.3s ease-in-out;
+            border: 1px solid rgba(255,255,255,0.1); /* Borda sutil para fundo escuro */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* Sombra padrão mais suave */
+        }
+        .link-button:hover {
+            transform: translateY(-5px) scale(1.02); /* Efeito de elevação e leve aumento */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4); /* Sombra mais marcante no hover */
+        }
+        /* Cores específicas para os ícones dos botões (mantidas para reconhecimento de marca externa) */
+        .icon-ifood { color: #EA1D2C; } /* Vermelho iFood */
+        .icon-instagram { background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } /* Gradiente Instagram */
+        .icon-whatsapp { color: #25D366; } /* Verde WhatsApp */
+        .icon-menu { color: #3B82F6; } /* Azul para Cardápio */
+
+        /* Animação para os itens (cards de ranking, notícias, lixeiras, dicas) */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animated-item {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0; /* Garante que o item esteja invisível antes da animação */
+            transition: all 0.3s ease-in-out; /* Para a animação de hover */
+        }
+        .animated-item:nth-child(1) { animation-delay: 0.1s; }
+        .animated-item:nth-child(2) { animation-delay: 0.2s; }
+        .animated-item:nth-child(3) { animation-delay: 0.3s; }
+        .animated-item:nth-child(4) { animation-delay: 0.4s; }
+        .animated-item:nth-child(5) { animation-delay: 0.5s; }
+        .animated-item:nth-child(6) { animation-delay: 0.6s; }
+        /* Adicione mais :nth-child se tiver mais itens */
+
+        /* Efeito de hover para os itens de notícia, ranking e conscientização ambiental */
+        .news-item, .ranking-item, .environmental-item {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* Sombra padrão mais suave */
+            transition: all 0.3s ease-in-out;
+        }
+        .news-item:hover, .ranking-item:hover, .environmental-item:hover {
+            transform: translateY(-5px) scale(1.03); /* Leve aumento e elevação */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); /* Sombra mais marcante no hover */
+        }
+
+        /* Estilo para o vídeo de fundo na seção Hero */
+        .hero-video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Garante que o vídeo cubra toda a área */
+            z-index: -1; /* Coloca o vídeo atrás do conteúdo */
+        }
+
+        /* Animação para títulos e blocos de conteúdo ao rolar */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-on-scroll {
+            opacity: 0; /* Começa invisível */
+            transform: translateY(50px); /* Começa um pouco abaixo */
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            animation: slideInUp 0.8s ease-out forwards;
+        }
+
+        /* Estilos do Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #1a202c; /* Fundo escuro para o modal */
+            color: #e2e8f0; /* Texto claro para o modal */
+            padding: 2.5rem;
+            border-radius: 1rem;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .modal-overlay.open .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #e2e8f0; /* Cor clara para o botão de fechar */
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+        .modal-close-button:hover {
+            color: #f6ad55; /* Laranja no hover */
+        }
+
+        /* Estilos para as imagens da história */
+        .story-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0; /* Todas as imagens começam invisíveis */
+            transition: opacity 1s ease-in-out; /* Transição suave de 1 segundo */
+        }
+        .story-image.active {
+            opacity: 1; /* A imagem ativa fica visível */
+        }
+
+        /* Estilos para os ícones das lixeiras (agora serão imagens) */
+        .bin-image {
+            width: 80px; /* Tamanho fixo para as imagens das lixeiras */
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-200 antialiased">
+    <!-- Cabeçalho da página transparente com espaço para logo -->
+    <header class="header-bg py-2 px-6 md:px-12 flex justify-center items-center rounded-b-xl absolute top-0 left-0 w-full z-20">
+        <div class="max-w-7xl mx-auto text-center">
+            <!-- Espaço para a logo da empresa como imagem -->
+            <!-- ATENÇÃO: Substitua 'path/to/your/logo.png' pela URL pública da sua logo -->
+            <img src="c:\Users\pc\Downloads\novaidentidade-03.png" alt="Logo da Sementes do Éden" class="mx-auto h-12 rounded-lg shadow-md object-contain" alt="" class="mx-auto h-12 rounded-lg shadow-md object-contain">
+        </div>
+    </header>
+
+    <!-- Seção Hero: Destaque principal da página com vídeo de fundo -->
+    <section class="relative text-white py-24 px-6 md:px-12 text-center overflow-hidden flex flex-col justify-center items-center min-h-[90vh] rounded-b-2xl">
+        <!-- Vídeo de fundo do YouTube -->
+        <iframe
+            class="hero-video-background"
+            src="https://cdn.pixabay.com/video/2022/12/15/143100-781982612_large.mp4"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+        ></iframe>
+        <!-- Camada de sobreposição para garantir legibilidade do texto -->
+        <div class="absolute inset-0 bg-black opacity-40 z-0"></div>
+
+        <div class="relative max-w-4xl mx-auto z-10">
+            <!-- Título de boas-vindas -->
+            <h2 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 drop-shadow-lg">Bem-vindo a Sementes do Éden!</h2>
+            <!-- Descrição curta da empresa -->
+            <p class="text-xl md:text-2xl mb-10 opacity-90 drop-shadow-lg">Sua experiência deliciosa a um clique de distância.</p>
+            <!-- Botão de Chamada para Ação -->
+            <a href="c:\Users\pc\Documents\cardapio digital.pdf" class="inline-block bg-gray-800 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:bg-gray-700 hover:text-white transform hover:scale-105 transition-all duration-300 ease-in-out text-lg md:text-xl">
+                Ver Cardápio Agora!
+            </a>
+        </div>
+    </section>
+
+    <!-- Seção de Links: Onde os botões para iFood, Instagram, etc. estarão -->
+    <section class="py-32 px-6 md:px-12 bg-gray-900">
+        <div class="max-w-6xl mx-auto animate-on-scroll" id="links-content">
+            <h3 class="text-4xl font-bold text-white text-center mb-10">Encontre-nos e Peça Agora!</h3>
+
+            <!-- Grid responsivo para os botões de link -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Cartão/Botão para iFood -->
+                <a href="https://www.ifood.com.br/delivery/belem-pa/sementes-do-eden-canudos/003d43b1-43ec-442b-b354-9b0882db5707" target="_blank" class="block bg-gray-800 rounded-2xl link-button p-6 text-center group">
+                    <!-- Imagem para iFood -->
+                    <img src="https://placehold.co/60x60/EA1D2C/FFFFFF?text=iFood" alt="" class="mx-auto mb-4 h-16 w-16 object-contain group-hover:scale-110 transition-transform duration-200">
+                    <h4 class="text-2xl font-semibold text-white mb-2 group-hover:text-orange-400">Peça pelo iFood</h4>
+                    <p class="text-gray-300">Descubra nosso menu completo e faça seu pedido com facilidade.</p>
+                </a>
+
+                <!-- Cartão/Botão para Instagram -->
+                <a href="https://www.instagram.com/sementesdoeden_/" target="_blank" class="block bg-gray-800 rounded-2xl link-button p-6 text-center group">
+                    <!-- Imagem para Instagram -->
+                    <img src="https://placehold.co/60x60/E1306C/FFFFFF?text=Insta" alt="" class="mx-auto mb-4 h-16 w-16 object-contain group-hover:scale-110 transition-transform duration-200">
+                    <h4 class="text-2xl font-semibold text-white mb-2 group-hover:text-orange-400">Siga-nos no Instagram</h4>
+                    <p class="text-gray-300">Fique por dentro das novidades, promoções e bastidores.</p>
+                </a>
+
+                <!-- Cartão/Botão para WhatsApp -->
+                <a href="https://wa.me/5591984808838?text=Ola" target="_blank" class="block bg-gray-800 rounded-2xl link-button p-6 text-center group">
+                    <!-- Imagem para WhatsApp -->
+                    <img src="https://placehold.co/60x60/25D366/FFFFFF?text=Whats" alt="" class="mx-auto mb-4 h-16 w-16 object-contain group-hover:scale-110 transition-transform duration-200">
+                    <h4 class="text-2xl font-semibold text-white mb-2 group-hover:text-orange-400">Fale Conosco no WhatsApp</h4>
+                    <p class="text-gray-300">Tire suas dúvidas e faça seu pedido direto com a gente.</p>
+                </a>
+
+                <!-- Cartão/Botão para Cardápio Online -->
+                <!-- ATENÇÃO: Substitua 'path/to/your/cardapio-digital.pdf' pela URL pública do seu cardápio -->
+                <a href="c:\Users\pc\Documents\cardapio digital.pdf" target="_blank" class="block bg-gray-800 rounded-2xl link-button p-6 text-center group">
+                    <!-- Imagem para Cardápio -->
+                    <img src="https://placehold.co/60x60/3B82F6/FFFFFF?text=Menu" alt="" class="mx-auto mb-4 h-16 w-16 object-contain group-hover:scale-110 transition-transform duration-200">
+                    <h4 class="text-2xl font-semibold text-white mb-2 group-hover:text-orange-400">Cardápio Online</h4>
+                    <p class="text-gray-300">Explore nosso cardápio digital completo e faça sua escolha.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção: Ranking dos Produtos Mais Pedidos -->
+    <section class="py-32 px-6 md:px-12 bg-gray-900 rounded-xl mx-auto max-w-6xl">
+        <div class="max-w-6xl mx-auto animate-on-scroll" id="ranking-content">
+            <!-- Título com animação ao rolar -->
+            <h3 class="text-4xl font-bold text-white text-center mb-10 animate-on-scroll" id="ranking-title">Ranking dos Produtos Mais Pedidos</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Exemplo de Item no Ranking 1 -->
+                <div class="bg-gray-800 rounded-xl ranking-item animated-item p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-5xl font-extrabold text-orange-500 mr-4">#1</span>
+                        <img src="https://placehold.co/80x80/FF7F50/FFFFFF?text=Produto1" alt="" class="w-20 h-20 rounded-full object-cover shadow-md">
+                    </div>
+                    <h4 class="text-2xl font-semibold text-white mb-2">Pizza Amazônica Especial</h4>
+                    <p class="text-gray-300">A combinação perfeita de sabores da floresta, nossa pizza mais amada!</p>
+                </div>
+
+                <!-- Exemplo de Item no Ranking 2 -->
+                <div class="bg-gray-800 rounded-xl ranking-item animated-item p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-5xl font-extrabold text-orange-500 mr-4">#2</span>
+                        <img src="https://placehold.co/80x80/228B22/FFFFFF?text=Produto2" alt="" class="w-20 h-20 rounded-full object-cover shadow-md">
+                    </div>
+                    <h4 class="text-2xl font-semibold text-white mb-2">Açaí Power Bowl</h4>
+                    <p class="text-gray-300">Energia pura da Amazônia com granola e frutas frescas.</p>
+                </div>
+
+                <!-- Exemplo de Item no Ranking 3 -->
+                <div class="bg-gray-800 rounded-xl ranking-item animated-item p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="text-5xl font-extrabold text-orange-500 mr-4">#3</span>
+                        <img src="https://placehold.co/80x80/8B4513/FFFFFF?text=Produto3" alt="" class="w-20 h-20 rounded-full object-cover shadow-md">
+                    </div>
+                    <h4 class="text-2xl font-semibold text-white mb-2">Tacacá Tradicional</h4>
+                    <p class="text-gray-300">Uma experiência autêntica com o caldo tucupi e jambu.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nova Seção: Nossa História -->
+    <section class="py-32 px-6 md:px-12 bg-gray-900 rounded-xl mx-auto max-w-6xl">
+        <div class="max-w-6xl mx-auto animate-on-scroll" id="history-content">
+            <!-- Título com animação ao rolar -->
+            <h3 class="text-4xl font-bold text-white text-center mb-10 animate-on-scroll" id="history-title">Nossa História</h3>
+
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-12 bg-gray-800 rounded-xl shadow-lg p-8 animated-item">
+                <!-- Coluna da Imagem (esquerda em desktop, topo em mobile) -->
+                <div class="relative w-full md:w-1/2 h-[400px] rounded-lg overflow-hidden shadow-md flex-shrink-0">
+                    <img src="https://placehold.co/600x400/004d00/FFFFFF?text=Historia+1" alt="" class="story-image absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-1000 ease-in-out">
+                    <img src="https://placehold.co/600x400/006400/FFFFFF?text=Historia+2" alt="" class="story-image absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out">
+                    <img src="https://placehold.co/600x400/007b00/FFFFFF?text=Historia+3" alt="" class="story-image absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out">
+                    <!-- Adicione mais imagens aqui se desejar -->
+                </div>
+
+                <!-- Coluna do Texto (direita em desktop, baixo em mobile) -->
+                <div class="w-full md:w-1/2 text-gray-300 text-lg leading-relaxed">
+                    <p class="mb-4">A Sementes do Éden nasceu da paixão em trazer os sabores autênticos e a riqueza da Amazônia para a sua mesa. Nossa jornada começou em <strong>2018 em Tucuruí, Pará</strong>, com a venda de **granolas, pães integrais e pizzas lactovegetarianas**, além de **marmitas veganas e vegetarianas** no delivery.</p>
+                    <p class="mb-4">Em <strong>2023, viemos para Belém do Pará</strong>, e inicialmente, operamos apenas pelo delivery. Após alguns meses de dedicação e muito trabalho, conseguimos um espaço para montar nossa loja física, onde hoje recebemos nossos clientes com todo carinho e oferecemos uma experiência completa.</p>
+                    <p class="mb-4">Cultivamos não apenas produtos, mas também laços com a comunidade local e produtores sustentáveis. Acreditamos que cada prato e cada produto deve contar uma história de respeito pela natureza e de amor pelo que fazemos.</p>
+                    <p class="text-orange-400 font-semibold">Venha fazer parte da nossa história!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nova Seção: Conscientização Ambiental -->
+    <section class="py-32 px-6 md:px-12 bg-gray-900 rounded-xl mx-auto max-w-6xl">
+        <div class="max-w-6xl mx-auto animate-on-scroll" id="environmental-content">
+            <!-- Título com animação ao rolar -->
+            <h3 class="text-4xl font-bold text-white text-center mb-10 animate-on-scroll" id="environmental-title">Conscientização Ambiental: Recicle Certo!</h3>
+
+            <div class="bg-gray-800 rounded-xl shadow-lg p-8 animated-item">
+                <p class="text-gray-300 mb-6 text-center text-xl">A Sementes do Éden se preocupa com o futuro do nosso planeta. Conheça as cores da reciclagem e descarte seu lixo corretamente:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 mb-10">
+                    <!-- Lixeira Azul: Papel -->
+                    <div class="text-center p-4 rounded-lg environmental-item">
+                        <img src="https://placehold.co/100x100/0000FF/FFFFFF?text=Papel" alt="" class="bin-image mx-auto">
+                        <h4 class="text-xl font-semibold text-white mb-2">AZUL: Papel</h4>
+                        <p class="text-gray-300 text-sm">Jornais, revistas, caixas de papelão, embalagens de papel.</p>
+                    </div>
+                    <!-- Lixeira Vermelha: Plástico -->
+                    <div class="text-center p-4 rounded-lg environmental-item">
+                        <img src="https://placehold.co/100x100/FF0000/FFFFFF?text=Plástico" alt="" class="bin-image mx-auto">
+                        <h4 class="text-xl font-semibold text-white mb-2">VERMELHO: Plástico</h4>
+                        <p class="text-gray-300 text-sm">Garrafas PET, embalagens de produtos de limpeza, sacolas, brinquedos.</p>
+                    </div>
+                    <!-- Lixeira Verde: Vidro -->
+                    <div class="text-center p-4 rounded-lg environmental-item">
+                        <img src="https://placehold.co/100x100/008000/FFFFFF?text=Vidro" alt="" class="bin-image mx-auto">
+                        <h4 class="text-xl font-semibold text-white mb-2">VERDE: Vidro</h4>
+                        <p class="text-gray-300 text-sm">Garrafas, potes, frascos, copos (inteiros ou quebrados, com cuidado).</p>
+                    </div>
+                    <!-- Lixeira Amarela: Metal -->
+                    <div class="text-center p-4 rounded-lg environmental-item">
+                        <img src="https://placehold.co/100x100/FFFF00/000000?text=Metal" alt="" class="bin-image mx-auto">
+                        <h4 class="text-xl font-semibold text-white mb-2">AMARELO: Metal</h4>
+                        <p class="text-gray-300 text-sm">Latas de alumínio, latas de aço, tampas, arames.</p>
+                    </div>
+                    <!-- Lixeira Marrom: Orgânico -->
+                    <div class="text-center p-4 rounded-lg environmental-item">
+                        <img src="https://placehold.co/100x100/8B4513/FFFFFF?text=Orgânico" alt="" class="bin-image mx-auto">
+                        <h4 class="text-xl font-semibold text-white mb-2">MARROM: Orgânico</h4>
+                        <p class="text-gray-300 text-sm">Restos de alimentos, cascas de frutas e legumes, borra de café.</p>
+                    </div>
+                </div>
+
+                <h4 class="text-2xl font-semibold text-white mb-4 text-center animate-on-scroll" id="tips-title">Dicas para um Descarte Consciente:</h4>
+                <ul class="list-none text-gray-300 space-y-3 max-w-2xl mx-auto">
+                    <li class="flex items-start animated-item environmental-item" style="animation-delay: 0.1s;">
+                        <span class="text-orange-500 font-bold text-xl mr-3">1.</span>
+                        <div>
+                            <strong class="text-white">Lave as Embalagens:</strong> Sempre que possível, lave embalagens plásticas, de vidro e metal para remover restos de alimentos e evitar odores.
+                        </div>
+                    </li>
+                    <li class="flex items-start animated-item environmental-item" style="animation-delay: 0.2s;">
+                        <span class="text-orange-500 font-bold text-xl mr-3">2.</span>
+                        <div>
+                            <strong class="text-white">Separe por Tipo:</strong> Facilite o trabalho das cooperativas e centros de reciclagem separando os materiais por tipo em casa.
+                        </div>
+                    </li>
+                    <li class="flex items-start animated-item environmental-item" style="animation-delay: 0.3s;">
+                        <span class="text-orange-500 font-bold text-xl mr-3">3.</span>
+                        <div>
+                            <strong class="text-white">Reduza o Consumo:</strong> A melhor forma de reciclar é não gerar lixo. Opte por produtos com menos embalagens e reutilize sempre que puder.
+                        </div>
+                    </li>
+                    <li class="flex items-start animated-item environmental-item" style="animation-delay: 0.4s;">
+                        <span class="text-orange-500 font-bold text-xl mr-3">4.</span>
+                        <div>
+                            <strong class="text-white">Composte o Orgânico:</strong> Se tiver espaço, considere a compostagem de resíduos orgânicos (restos de alimentos, podas) para gerar adubo rico para plantas.
+                        </div>
+                    </li>
+                    <li class="flex items-start animated-item environmental-item" style="animation-delay: 0.5s;">
+                        <span class="text-orange-500 font-bold text-xl mr-3">5.</span>
+                        <div>
+                            <strong class="text-white">Descarte Especial:</strong> Eletrônicos, pilhas, baterias, lâmpadas e medicamentos devem ser descartados em pontos de coleta específicos para evitar contaminação.
+                        </div>
+                    </li>
+                    <li class="flex items-start animated-item environmental-item" style="animation-delay: 0.6s;">
+                        <span class="text-orange-500 font-bold text-xl mr-3">6.</span>
+                        <div>
+                            <strong class="text-white">Lixo Não Reciclável (Rejeitos):</strong> Materiais como papel higiênico, absorventes, fraldas, cerâmica, espelhos quebrados, acrílico e isopor geralmente devem ir para o lixo comum.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Notícias e Avisos com Animação -->
+    <section class="py-32 px-6 md:px-12 bg-gray-900 rounded-xl mx-auto max-w-6xl">
+        <div class="max-w-6xl mx-auto animate-on-scroll" id="news-content">
+            <!-- Título com animação ao rolar -->
+            <h3 class="text-4xl font-bold text-white text-center mb-10 animate-on-scroll" id="news-title">Últimas Notícias e Avisos</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Exemplo de Notícia 1 com animação e hover -->
+                <div class="bg-gray-800 rounded-xl news-item animated-item p-6">
+                    <img src="https://placehold.co/600x200/008000/FFFFFF?text=Noticia+1" alt="" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h4 class="text-2xl font-semibold text-white mb-3">Grande Inauguração da Nova Unidade!</h4>
+                    <p class="text-gray-300 mb-2">Estamos muito felizes em anunciar a abertura da nossa nova unidade em [Localização da Nova Unidade] no dia [Data]! Venha nos visitar e aproveitar nossas ofertas especiais de inauguração.</p>
+                    <button class="read-more-btn mt-4 bg-orange-600 text-white py-2 px-4 rounded-full hover:bg-orange-700 transition-colors duration-200" data-news-id="1">Leia Mais</button>
+                </div>
+
+                <!-- Exemplo de Notícia 2 com animação e hover -->
+                <div class="bg-gray-800 rounded-xl news-item animated-item p-6">
+                    <img src="https://placehold.co/600x200/FFA500/FFFFFF?text=Noticia+2" alt="" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h4 class="text-2xl font-semibold text-white mb-3">Promoção Especial de Aniversário!</h4>
+                    <p class="text-gray-300 mb-2">Para celebrar nosso aniversário, teremos descontos imperdíveis em todo o cardápio durante a semana de [Data Início] a [Data Fim]. Não perca!</p>
+                    <button class="read-more-btn mt-4 bg-orange-600 text-white py-2 px-4 rounded-full hover:bg-orange-700 transition-colors duration-200" data-news-id="2">Leia Mais</button>
+                </div>
+
+                <!-- Adicione mais notícias aqui, copiando e colando o bloco acima e ajustando o animation-delay no CSS se necessário -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Nova Seção: Onde Estamos Localizados (com Google Maps) -->
+    <section class="py-32 px-6 md:px-12 bg-gray-900 rounded-xl mx-auto max-w-6xl">
+        <div class="max-w-6xl mx-auto animate-on-scroll" id="location-content">
+            <!-- Título com animação ao rolar -->
+            <h3 class="text-4xl font-bold text-white text-center mb-10 animate-on-scroll" id="location-title">Onde Estamos Localizados</h3>
+
+            <div class="bg-gray-800 rounded-xl shadow-lg p-6 text-center animated-item">
+                <p class="text-gray-300 mb-4">Venha nos visitar e saborear as delícias da Amazônia!</p>
+                <p class="text-gray-300 mb-4"><strong>Endereço:</strong> Avenida Ceará, 330, Belém - PA</p>
+
+                <!-- Iframe do Google Maps com rota para o endereço -->
+                <div class="relative overflow-hidden rounded-lg w-full" style="padding-top: 40%;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.583344600201!2d-48.49016148524021!3d-1.455832799059518!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x92a488e0b6b0c2b1%3A0x6a0a0a0a0a0a0a0a!2sBel%C3%A9m%2C%20Par%C3%A1!5e0!3m2!1spt-BR!2sbr!4v1678888888888!5m2!1spt-BR!2sbr"
+                        width="100%"
+                        height="100%"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="absolute top-0 left-0 w-full h-full rounded-lg"
+                    ></iframe>
+                </div>
+                <p class="text-gray-400 text-sm mt-4">Clique no mapa para interagir e traçar sua rota.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé da página -->
+    <footer class="bg-gray-800 text-white py-3 px-6 md:px-12 text-center rounded-t-xl">
+        <div class="max-w-7xl mx-auto">
+            <p class="text-md">&copy; 2025 Sementes do Éden. Todos os direitos reservados.</p>
+            <p class="text-sm mt-1">CNPJ: [Seu CNPJ Aqui]</p>
+            <p class="text-xs mt-1">Feito com ❤️ para você.</p>
+        </div>
+    </footer>
+
+    <!-- Modal para Notícias Completas -->
+    <div id="newsModal" class="modal-overlay">
+        <div class="modal-content bg-gray-800 text-white">
+            <button class="modal-close-button" id="closeModalBtn">&times;</button>
+            <h3 id="modalNewsTitle" class="text-4xl font-bold mb-4 text-white"></h3>
+            <img id="modalNewsImage" src="" alt="" class="w-full h-auto rounded-lg mb-4 hidden">
+            <p id="modalNewsContent" class="text-gray-300 leading-relaxed"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const newsTitleElement = document.getElementById('news-title');
+            const rankingTitleElement = document.getElementById('ranking-title');
+            const locationTitleElement = document.getElementById('location-title');
+            const historyTitleElement = document.getElementById('history-title');
+            const environmentalTitleElement = document.getElementById('environmental-title');
+            const tipsTitleElement = document.getElementById('tips-title');
+
+            // Elementos de conteúdo para observar para a transição de seção
+            const sectionsToAnimate = document.querySelectorAll('section > div[id$="-content"]');
+
+
+            const readMoreButtons = document.querySelectorAll('.read-more-btn');
+            const newsModal = document.getElementById('newsModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const modalNewsTitle = document.getElementById('modalNewsTitle');
+            const modalNewsImage = document.getElementById('modalNewsImage');
+            const modalNewsContent = document.getElementById('modalNewsContent');
+
+            // Conteúdo completo das notícias (substitua com seus dados reais)
+            const newsData = {
+                1: {
+                    title: "Grande Inauguração da Nova Unidade: Sementes do Éden Chega em [Localização]!",
+                    content: `
+                        <p>É com imensa alegria que a Sementes do Éden anuncia a grande inauguração de sua mais nova unidade em <strong>[Localização da Nova Unidade]</strong>, no dia <strong>[Data]</strong>! Convidamos a todos para celebrar conosco este marco importante e desfrutar de um ambiente acolhedor e repleto de sabores únicos da Amazônia.</p>
+                        <p class="mt-4">Preparamos um evento especial com degustações, música ao vivo e surpresas para nossos primeiros clientes. Venha conhecer nosso novo espaço, que foi cuidadosamente projetado para oferecer a melhor experiência, mantendo a essência e a qualidade que você já conhece.</p>
+                        <p class="mt-4">Nossa equipe estará pronta para recebê-lo com o carinho e a atenção que você merece. Não perca esta oportunidade de fazer parte da nossa história e saborear o que há de melhor em produtos e delícias inspiradas na rica biodiversidade amazônica.</p>
+                        <p class="mt-4 text-orange-400 font-semibold">Esperamos por você!</p>
+                    `,
+                    image: "https://placehold.co/800x400/008000/FFFFFF?text=Nova+Unidade" // Imagem para a notícia 1
+                },
+                2: {
+                    title: "Celebre Conosco: Promoção Especial de Aniversário Sementes do Éden!",
+                    content: `
+                        <p>A Sementes do Éden está em festa! Para celebrar mais um ano de sucesso e agradecer a todos os nossos clientes pela confiança e carinho, preparamos uma <strong>promoção especial de aniversário</strong> com descontos imperdíveis em todo o nosso cardápio!</p>
+                        <p class="mt-4">Durante a semana de <strong>[Data Início] a [Data Fim]</strong>, você poderá desfrutar de suas delícias favoritas e experimentar novidades com preços exclusivos. É a sua chance de se deliciar com nossos pratos, sucos, sobremesas e produtos artesanais, todos feitos com ingredientes frescos e selecionados da Amazônia.</p>
+                        <p class="mt-4">Fique atento às nossas redes sociais para não perder nenhum detalhe e prepare-se para saborear a Amazônia com a Sementes do Éden. Sua presença é o nosso maior presente!</p>
+                        <p class="mt-4 text-orange-400 font-semibold">Aproveite e celebre o sabor da vida com a gente!</p>
+                    `,
+                    image: "https://placehold.co/800x400/FFA500/FFFFFF?text=Aniversário" // Imagem para a notícia 2
+                }
+                // Adicione mais objetos de notícia aqui com IDs sequenciais (3, 4, etc.)
+            };
+
+            // Intersection Observer para os títulos e conteúdos das seções
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        // entry.target.classList.remove('is-visible'); // Descomente se quiser que a animação reinicie ao sair da tela
+                    }
+                });
+            }, {
+                threshold: 0.2 // A animação será ativada quando 20% do elemento estiver visível
+            });
+
+            // Observa os títulos
+            if (newsTitleElement) {
+                observer.observe(newsTitleElement);
+            }
+            if (rankingTitleElement) {
+                observer.observe(rankingTitleElement);
+            }
+            if (locationTitleElement) {
+                observer.observe(locationTitleElement);
+            }
+            if (historyTitleElement) {
+                observer.observe(historyTitleElement);
+            }
+            if (environmentalTitleElement) {
+                observer.observe(environmentalTitleElement);
+            }
+            if (tipsTitleElement) {
+                observer.observe(tipsTitleElement);
+            }
+
+            // Observa os conteúdos das seções
+            sectionsToAnimate.forEach(section => {
+                observer.observe(section);
+            });
+
+
+            // Funções do Modal
+            function openModal(newsId) {
+                const news = newsData[newsId];
+                if (news) {
+                    modalNewsTitle.textContent = news.title;
+                    modalNewsContent.innerHTML = news.content;
+                    if (news.image) {
+                        modalNewsImage.src = news.image;
+                        modalNewsImage.classList.remove('hidden');
+                    } else {
+                        modalNewsImage.classList.add('hidden');
+                        modalNewsImage.src = '';
+                    }
+                    newsModal.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeModal() {
+                newsModal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            // Event listeners para os botões "Leia Mais"
+            readMoreButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const newsId = event.target.dataset.newsId;
+                    openModal(newsId);
+                });
+            });
+
+            // Event listener para o botão de fechar do modal
+            closeModalBtn.addEventListener('click', closeModal);
+
+            // Fechar modal ao clicar fora do conteúdo
+            newsModal.addEventListener('click', (event) => {
+                if (event.target === newsModal) {
+                    closeModal();
+                }
+            });
+
+            // Fechar modal ao pressionar a tecla ESC
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && newsModal.classList.contains('open')) {
+                    closeModal();
+                }
+            });
+
+            // Animação de troca de imagens na seção "Nossa História"
+            const storyImages = document.querySelectorAll('.story-image');
+            let currentStoryImageIndex = 0;
+
+            function cycleStoryImages() {
+                // Remove a classe 'active' da imagem atual
+                storyImages[currentStoryImageIndex].classList.remove('active');
+
+                // Calcula o próximo índice
+                currentStoryImageIndex = (currentStoryImageIndex + 1) % storyImages.length;
+
+                // Adiciona a classe 'active' à próxima imagem
+                storyImages[currentStoryImageIndex].classList.add('active');
+            }
+
+            // Garante que a primeira imagem esteja visível ao carregar
+            if (storyImages.length > 0) {
+                storyImages[0].classList.add('active');
+            }
+
+            // Inicia o ciclo de imagens a cada 5 segundos (5000ms)
+            setInterval(cycleStoryImages, 5000);
+        });
+    </script>
+</body>
+</html>
