@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -61,10 +61,6 @@
         /* Adicione mais :nth-child se tiver mais itens */
 
         /* Efeito de hover para os itens de notícia, ranking e conscientização ambiental */
-        .news-item, .ranking-item, .environmental-item {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* Sombra padrão mais suave */
-            transition: all 0.3s ease-in-out;
-        }
         .news-item:hover, .ranking-item:hover, .environmental-item:hover {
             transform: translateY(-5px) scale(1.03); /* Leve aumento e elevação */
             box-shadow: 0 20px 40px rgba(0,0,0,0.5); /* Sombra mais marcante no hover */
@@ -188,14 +184,11 @@
 
     <!-- Seção Hero: Destaque principal da página com vídeo de fundo -->
     <section class="relative text-white py-24 px-6 md:px-12 text-center overflow-hidden flex flex-col justify-center items-center min-h-[90vh] rounded-b-2xl">
-        <!-- Vídeo de fundo do YouTube -->
-        <iframe
-            class="hero-video-background"
-            src="https://www.youtube.com/embed/wX8foM1z7S0?autoplay=1&mute=1&loop=1&playlist=wX8foM1z7S0&controls=0&modestbranding=1&rel=0"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-        ></iframe>
+        <!-- Vídeo de fundo -->
+        <video autoplay loop muted playsinline class="hero-video-background">
+            <source src="https://rr4---sn-gpv7ynee.googlevideo.com/videoplayback?expire=1754504259&ei=4keTaIf3O6TLssUP6azt0Qs&ip=2401%3A4900%3A8820%3A11b8%3Af462%3A908f%3Afc1f%3A7c13&id=o-ALloQYFT5MmJvOG_I2ZWQIPcPhe8NWU3MUSsbtTTU_gn&itag=401&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C271%2C278%2C313%2C394%2C395%2C396%2C397%2C398%2C399%2C400%2C401%2C779%2C780&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&bui=AY1jyLMgyCHxbdhkwlP05bz5Xz8NZ7VxCeAW_C7rDYocrux1UPZlrB50lGUO_Bjz-L7afVHLmuQSXwBK&vprv=1&svpuc=1&mime=video%2Fmp4&ns=0tfHT0vEgdkjbEBxSct-DrYQ&rqh=1&gir=yes&clen=27846977&dur=36.680&lmt=1734210398268984&keepalive=yes&lmw=1&fexp=24350590,24350737,24350827,24351316,24351318,24351528,24352220,24352258,24352262,24352460,24352467,24352517,24352519,24352540,24352559,24352568,24352573,24352574,24352960,51548754,51557446&c=TVHTML5&sefc=1&txp=543C434&n=j-pZgtcHDe1jDw&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cvprv%2Csvpuc%2Cmime%2Cns%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRQIgWu8xylmhDmzJybc400ypRodyyXuLaxhkyA418-BYDHYCIQDDGSy1JikXpfcDXF-f_aPt33UHy4FBh9m1RHkkGrFs-g%3D%3D&rm=sn-ci5gup-civl7s,sn-ci5gup-cvhz7z,sn-cvhde7e&rrc=79,79,104&req_id=bbd085c46f73a3ee&cmsv=e&rms=nxu,au&redirect_counter=3&cms_redirect=yes&ipbypass=yes&met=1754495924,&mh=T6&mip=2804:14c:5989:457f:cbc:b086:38cb:cab8&mm=30&mn=sn-gpv7ynee&ms=nxu&mt=1754495609&mv=m&mvi=4&pl=49&lsparams=ipbypass,met,mh,mip,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRAIgFSzdm8sQQ8K6NO81bCwxaEaOKffYbDZQWybh1LSkrYYCIBuylbV6-9kuStqxXm6VNqDnzjMu1zrgq9scYxkQ1VA7" type="video/mp4">
+            Seu navegador não suporta a tag de vídeo.
+        </video>
         <!-- Camada de sobreposição para garantir legibilidade do texto -->
         <div class="absolute inset-0 bg-black opacity-40 z-0"></div>
 
